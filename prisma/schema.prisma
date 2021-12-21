@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  user_id      Int            @id @default(autoincrement())
+  dept         String         @db.VarChar(255)
+  email_id     String         @unique
+  password     String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @default(now()) @updatedAt
+  Transactions Transactions[]
+}
+
+model Inventory {
+  id           Int      @id @default(autoincrement())
+  name         String
+  quantity     Int
+  class        String
+  bill         Json
+  image        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
+  prodCustomID String?
+}
+
+model Transactions {
+  id                Int      @id @default(autoincrement())
+  user_id           Int
+  status            String
+  class             String?
+  assigned_items    Json?
+  createdAt         DateTime @default(now())
+  permission_letter String
+  updatedAt         DateTime @default(now()) @updatedAt
+  title             String
+  description       String   @default("")
+  user              Users    @relation(fields: [user_id], references: [user_id])
+
+  @@index([user_id], name: "user_id")
+}
